@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore | Hole in the Wall</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <img src="assets/images/logo.png" alt="Hole in the Wall logo">
+        <span>Hole in the Wall</span>
+      </a>
+      <nav class="nav-links">
+        <a href="about.html">About</a>
+        <a href="portal.html">For Restaurants</a>
+        <a href="sign-in.html" class="btn btn-primary">Sign In</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container section">
+    <div class="split-layout">
+      <section class="results-panel panel">
+        <h1>Explore nearby places</h1>
+        <div class="search-box">
+          <input type="text" placeholder="Search by campus, street, or restaurant name">
+          <select id="category-filter">
+            <option>All</option>
+            <option>Bakery</option>
+            <option>Cafe</option>
+            <option>Late Night</option>
+          </select>
+          <button class="btn btn-primary">Search</button>
+        </div>
+        <div class="filter-row">
+          <span class="filter-chip">Student deals</span>
+          <span class="filter-chip">Catering</span>
+          <span class="filter-chip">Fundraiser-friendly</span>
+          <span class="filter-chip">Claimed only</span>
+        </div>
+        <div id="results-list"></div>
+      </section>
+
+      <section class="map-panel" id="map-layer"></section>
+    </div>
+  </main>
+
+  <script src="assets/js/explore.js"></script>
+</body>
+</html>

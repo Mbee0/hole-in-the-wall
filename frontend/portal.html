@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Portal | Hole in the Wall</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <img src="assets/images/logo.png" alt="Hole in the Wall logo">
+        <span>Hole in the Wall</span>
+      </a>
+      <nav class="nav-links">
+        <a href="about.html">About</a>
+        <a href="explore.html">Explore</a>
+        <a href="sign-in.html" class="btn btn-primary">Sign In</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container section">
+    <div class="portal-layout">
+      <aside class="panel sidebar-nav">
+        <a class="active" href="#">Overview</a>
+        <a href="#">My Page</a>
+        <a href="#">Deals</a>
+        <a href="#">Catering</a>
+        <a href="#">Reviews</a>
+        <a href="#">Settings</a>
+      </aside>
+
+      <section class="panel portal-section">
+        <h1>Restaurant dashboard</h1>
+        <p class="helper">Use this page to create or claim a page, add your story, and publish student-friendly deals.</p>
+
+        <form id="business-form">
+          <label for="business-name">Business name</label>
+          <input id="business-name" type="text" placeholder="Maple Crumb Bakery" required>
+
+          <label for="business-category">Category</label>
+          <select id="business-category">
+            <option>Restaurant</option>
+            <option>Bakery</option>
+            <option>Cafe</option>
+            <option>Catering</option>
+          </select>
+
+          <label for="business-address">Address</label>
+          <input id="business-address" type="text" placeholder="12 College Ave">
+
+          <label for="deal-summary">Current deal summary</label>
+          <input id="deal-summary" type="text" placeholder="15% off student combo meals">
+
+          <label for="business-story">Business story</label>
+          <textarea id="business-story" placeholder="Tell students what makes your place special."></textarea>
+
+          <div class="cta-row">
+            <button class="btn btn-primary" type="submit">Save business page</button>
+            <button class="btn btn-secondary" type="button">Claim existing page</button>
+          </div>
+          <p id="portal-message" class="helper"></p>
+        </form>
+
+        <div class="section">
+          <h3>Active deals preview</h3>
+          <div class="table-like">
+            <div class="table-row">
+              <strong>Student Tuesday</strong>
+              <span>Public</span>
+              <span>Ends weekly</span>
+            </div>
+            <div class="table-row">
+              <strong>Club Catering Tray</strong>
+              <span>Inquiry</span>
+              <span>Always on</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="assets/js/portal.js"></script>
+</body>
+</html>
