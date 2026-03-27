@@ -29,12 +29,15 @@ def serialize_business(business):
     }
 
 def serialize_deal(deal):
+    # Deal documents have evolved over the project; keep this serializer tolerant.
     return {
         "id": str(deal["_id"]),
         "business_id": deal.get("business_id"),
+        "business_name": deal.get("business_name"),
         "title": deal.get("title"),
         "description": deal.get("description"),
-        "deal_type": deal.get("deal_type"),
-        "audience": deal.get("audience"),
+        "deal_type": deal.get("deal_type") or deal.get("type") or "Student Deal",
+        "expires": deal.get("expires"),
+        "student_only": bool(deal.get("student_only", False)),
         "active": deal.get("active", True),
     }

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Business Portal | Hole in the Wall</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
+
 <body>
   <header class="topbar">
     <div class="container nav">
@@ -16,7 +18,9 @@
       <nav class="nav-links">
         <a href="about.html">About</a>
         <a href="explore.html">Explore</a>
-        <a href="sign-in.html" class="btn btn-primary">Sign In</a>
+        <a href="customer.html">My Deals</a>
+        <a href="portal.html" class="btn btn-primary">Restaurant Portal</a>
+        <a href="profile.html" class="profile-icon" title="My profile" aria-label="My profile">👤</a>
       </nav>
     </div>
   </header>
@@ -34,7 +38,8 @@
 
       <section class="panel portal-section">
         <h1>Restaurant dashboard</h1>
-        <p class="helper">Use this page to create or claim a page, add your story, and publish student-friendly deals.</p>
+        <p class="helper">Use this page to create or claim a page, add your story, and publish student-friendly deals.
+        </p>
 
         <form id="business-form">
           <label for="business-name">Business name</label>
@@ -53,6 +58,20 @@
 
           <label for="deal-summary">Current deal summary</label>
           <input id="deal-summary" type="text" placeholder="15% off student combo meals">
+
+          <label>Offer types</label>
+          <div class="checkbox-row">
+            <label><input type="checkbox" class="offer-type" value="deals"> Deals</label>
+            <label><input type="checkbox" class="offer-type" value="catering"> Catering</label>
+            <label><input type="checkbox" class="offer-type" value="fundraising"> Fundraising</label>
+          </div>
+
+          <label>Deal focus (if offering deals)</label>
+          <div class="checkbox-row">
+            <label><input type="checkbox" class="deal-focus" value="meals"> Meals</label>
+            <label><input type="checkbox" class="deal-focus" value="drinks"> Drinks</label>
+            <label><input type="checkbox" class="deal-focus" value="dessert"> Dessert</label>
+          </div>
 
           <label for="business-story">Business story</label>
           <textarea id="business-story" placeholder="Tell students what makes your place special."></textarea>
@@ -85,4 +104,5 @@
 
   <script src="assets/js/portal.js"></script>
 </body>
+
 </html>

@@ -82,6 +82,8 @@ Then visit `http://localhost:8080`.
 
 ## API endpoints included
 - `GET /api/health`
+- `GET /api/auth/me`
+- `POST /api/auth/logout`
 - `GET /api/businesses`
 - `GET /api/businesses/<id>`
 - `POST /api/businesses`
@@ -89,6 +91,23 @@ Then visit `http://localhost:8080`.
 - `POST /api/deals`
 - `POST /api/auth/register`
 - `POST /api/auth/login`
+- Student code verification:
+  - `POST /api/auth/student/verify/start`
+  - `POST /api/auth/student/verify/confirm`
+- Business onboarding (code after admin approval):
+  - `POST /api/business-inquiries`
+  - `POST /api/business-inquiries/<id>/approve` (admin)
+  - `POST /api/auth/business/verify/confirm`
+- `GET /api/customer/preferences` (consumer/student)
+- `PUT /api/customer/preferences` (consumer/student)
+- `GET /api/customer/activity` (consumer/student)
+- `POST /api/customer/log` (consumer/student)
+- `GET /api/customer/saved-deals` (consumer/student)
+- `POST /api/customer/save-deal` (consumer/student)
+
+Protected actions:
+- `POST /api/businesses` requires a logged-in `business` account
+- `POST /api/deals` requires a logged-in `business` account
 
 ## Deployment plan
 ### Frontend

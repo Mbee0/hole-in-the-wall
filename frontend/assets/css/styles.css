@@ -14,6 +14,12 @@
   box-sizing: border-box;
 }
 
+vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
 body {
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
@@ -74,6 +80,11 @@ img {
   flex-wrap: wrap;
 }
 
+.nav-links a.active {
+  background: var(--deep-green);
+  color: var(--white);
+}
+
 .btn,
 button {
   border: none;
@@ -91,6 +102,19 @@ button {
 .btn-secondary {
   background: var(--beige);
   color: var(--text);
+}
+
+.profile-icon {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #efe3d3;
+  border: 1px solid rgba(139, 91, 76, 0.2);
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .hero {
@@ -148,6 +172,25 @@ button {
   font-size: 0.95rem;
 }
 
+.filter-chip {
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.filter-chip.is-active {
+  outline: 2px solid rgba(23, 58, 51, 0.22);
+  transform: translateY(-1px);
+}
+
+/* Explore filter colors (same warm/earth palette family). */
+.chip-deals { background: #f5dfc6; color: #7a3f19; border-color: #e9c9a5; }
+.chip-catering { background: #dce8d8; color: #2f5448; border-color: #c2d8bc; }
+.chip-fundraising { background: #e7ddcf; color: #5b4a40; border-color: #d7c8b4; }
+
+.chip-meals { background: #f8ead7; color: #7b4d26; border-color: #ead2b3; }
+.chip-drinks { background: #d8e8e4; color: #2a5a52; border-color: #c0dad2; }
+.chip-dessert { background: #f3dfe7; color: #6a4358; border-color: #e7c8d6; }
+
 .section {
   padding: 32px 0;
 }
@@ -160,6 +203,7 @@ button {
 
 .card {
   padding: 22px;
+  margin: 0, 14px 0;
 }
 
 .card h3 {
@@ -209,6 +253,12 @@ label {
   font-weight: 700;
 }
 
+#map {
+  height: 400px;
+  width: 100%;
+  border-radius: 12px;
+}
+
 input,
 select,
 textarea {
@@ -236,6 +286,45 @@ textarea {
   gap: 18px;
   min-height: calc(100vh - 140px);
   padding-bottom: 26px;
+}
+
+/* Explore page layout: fill viewport below topbar with scrollable sidebar. */
+.explore-main {
+  width: 100vw;
+  max-width: 100vw;
+  padding: 0;
+  margin: 0;
+  height: calc(100vh - 86px);
+}
+
+.explore-main .split-layout {
+  grid-template-columns: minmax(300px, 28%) 1fr;
+  gap: 0;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.explore-main .results-panel {
+  background: #fffdf9;
+  border-radius: 0;
+  box-shadow: none;
+  border-right: 1px solid rgba(139, 91, 76, 0.16);
+  height: 100%;
+  overflow-y: auto;
+}
+
+.explore-main .map-panel {
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  height: 100%;
+}
+
+.explore-main #map {
+  height: 100%;
+  border-radius: 0;
 }
 
 .results-panel,
@@ -291,8 +380,8 @@ textarea {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255,255,255,0.32) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.32) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.32) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.32) 1px, transparent 1px);
   background-size: 70px 70px;
 }
 
@@ -319,6 +408,22 @@ textarea {
 
 .pin.active {
   background: var(--deep-green);
+}
+
+/* Leaflet custom pins by category color */
+.custom-pin-wrapper {
+  background: transparent;
+  border: none;
+}
+
+.custom-pin {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  border: 3px solid #fffaf4;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 .detail-layout {
@@ -387,6 +492,7 @@ textarea {
 }
 
 @media (max-width: 960px) {
+
   .hero-grid,
   .grid-3,
   .split-layout,

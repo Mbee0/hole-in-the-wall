@@ -22,28 +22,14 @@
 
   <main class="auth-wrap container">
     <div class="auth-card">
-      <h1>Sign in or get started</h1>
-      <p class="helper">For now this uses a simple starter registration flow connected to the Flask backend.</p>
-      <form id="auth-form">
-        <label for="email">Email</label>
-        <input id="email" type="email" placeholder="name@example.edu" required>
+      <h1>Welcome</h1>
+      <p class="helper">Choose what you want to do. You can still browse About and Explore without signing in.</p>
 
-        <label for="role">I am using this as</label>
-        <select id="role">
-          <option value="consumer">Consumer / Student</option>
-          <option value="producer">Restaurant / Food business</option>
-          <option value="school">School / Student org</option>
-        </select>
-
-        <div class="cta-row">
-          <button class="btn btn-primary" type="submit">Create account</button>
-          <a href="explore.html" class="btn btn-secondary">Continue as guest</a>
-        </div>
-      </form>
-      <p id="auth-message" class="helper"></p>
+      <div class="cta-row" style="justify-content: flex-start; gap: 12px;">
+        <a class="btn btn-primary" href="login.html">Log in</a>
+        <a class="btn btn-secondary" href="signup.html">Create an account</a>
+      </div>
     </div>
   </main>
-
-  <script src="assets/js/auth.js"></script>
 </body>
 </html>

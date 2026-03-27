@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Signup | Hole in the Wall</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <img src="assets/images/logo.png" alt="Hole in the Wall logo">
+        <span>Hole in the Wall</span>
+      </a>
+      <nav class="nav-links">
+        <a href="about.html">About</a>
+        <a href="explore.html">Explore</a>
+        <a href="login.html" class="btn btn-primary">Sign In</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="auth-wrap container">
+    <div class="auth-card">
+      <h1>Student signup</h1>
+      <p class="helper">Verify your .edu email, then finish setting up your account.</p>
+
+      <form id="student-verify-form">
+        <div id="step-email">
+          <label for="student-email">.edu email</label>
+          <input id="student-email" type="email" placeholder="name@example.edu" required>
+          <div class="cta-row">
+            <button id="student-send-code" class="btn btn-primary" type="button">Send verification code</button>
+          </div>
+        </div>
+
+        <div id="step-code" style="display:none;">
+          <label for="student-code">6-digit code</label>
+          <input id="student-code" type="text" inputmode="numeric" pattern="^[0-9]{6}$" placeholder="000000">
+          <div class="cta-row">
+            <button id="student-code-continue" class="btn btn-primary" type="button">Continue</button>
+          </div>
+        </div>
+
+        <div id="step-profile" style="display:none;">
+          <label for="student-name">Name</label>
+          <input id="student-name" type="text" placeholder="Jane Student">
+
+          <label for="student-password">Password</label>
+          <input id="student-password" type="password" placeholder="Create a password">
+
+          <h2>Preferences</h2>
+          <label for="campus-name">Campus name</label>
+          <input id="campus-name" type="text" placeholder="e.g., CSU" />
+
+          <label>Preferred categories</label>
+          <div class="checkbox-row">
+            <label><input type="checkbox" class="pref-category" value="Bakery"> Bakery</label>
+            <label><input type="checkbox" class="pref-category" value="Cafe"> Cafe</label>
+            <label><input type="checkbox" class="pref-category" value="Late Night"> Late Night</label>
+          </div>
+
+          <label for="preference-notes">Notes (optional)</label>
+          <textarea id="preference-notes" placeholder="What deals do you look for?"></textarea>
+
+          <div class="cta-row">
+            <button id="student-create-account" class="btn btn-primary" type="button">Create account</button>
+            <a class="btn btn-secondary" href="login.html" style="text-decoration:none;">I already have an account</a>
+          </div>
+        </div>
+      </form>
+
+      <p id="auth-message" class="helper"></p>
+    </div>
+  </main>
+
+  <script src="assets/js/signup-student.js?v=3"></script>
+</body>
+</html>
+

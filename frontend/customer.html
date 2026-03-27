@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Deals | Hole in the Wall</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <img src="assets/images/logo.png" alt="Hole in the Wall logo">
+        <span>Hole in the Wall</span>
+      </a>
+      <nav class="nav-links">
+        <a href="about.html">About</a>
+        <a href="explore.html">Explore</a>
+        <a href="customer.html" class="btn btn-primary">My Deals</a>
+        <a href="profile.html" class="profile-icon" title="My profile" aria-label="My profile">👤</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container section">
+    <div class="customer-layout">
+      <section class="panel">
+        <h1>Student dashboard</h1>
+        <p id="customer-message" class="helper"></p>
+
+        <div class="cta-row">
+          <button id="logout-btn" class="btn btn-secondary" type="button">Log out</button>
+        </div>
+
+        <h2>My deals</h2>
+        <form id="preferences-form">
+          <label for="campus-name">Campus name</label>
+          <input id="campus-name" type="text" placeholder="e.g., CSU" />
+
+          <label>Preferred categories</label>
+          <div class="checkbox-row">
+            <label><input type="checkbox" class="pref-category" value="Bakery"> Bakery</label>
+            <label><input type="checkbox" class="pref-category" value="Cafe"> Cafe</label>
+            <label><input type="checkbox" class="pref-category" value="Late Night"> Late Night</label>
+          </div>
+
+          <label for="preference-notes">Notes (optional)</label>
+          <textarea id="preference-notes" placeholder="What deals do you look for?"></textarea>
+
+          <div class="cta-row">
+            <button class="btn btn-primary" type="submit">Save my deals</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>Deals</h2>
+        <div id="deals-list"></div>
+
+        <h2>Saved deals</h2>
+        <div id="saved-deals-list"></div>
+      </section>
+
+      <section class="panel">
+        <h2>Activity log</h2>
+        <div id="activity-list"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="assets/js/customer.js"></script>
+</body>
+
+</html>

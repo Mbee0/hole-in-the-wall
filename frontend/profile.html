@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile | Hole in the Wall</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <img src="assets/images/logo.png" alt="Hole in the Wall logo">
+        <span>Hole in the Wall</span>
+      </a>
+      <nav class="nav-links">
+        <a href="about.html">About</a>
+        <a href="explore.html">Explore</a>
+        <a id="dashboard-link" href="index.html">Dashboard</a>
+        <a href="profile.html" class="profile-icon" title="My profile" aria-label="My profile">👤</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container section">
+    <section class="panel" style="padding: 24px;">
+      <h1>My account</h1>
+      <p id="profile-message" class="helper"></p>
+
+      <div class="table-like">
+        <div class="table-row"><strong>Name</strong><span id="profile-name"></span><span></span></div>
+        <div class="table-row"><strong>Email</strong><span id="profile-email"></span><span></span></div>
+        <div class="table-row"><strong>Account type</strong><span id="profile-type"></span><span></span></div>
+      </div>
+
+      <h2 style="margin-top:20px;">My deals settings</h2>
+      <div id="profile-deals" class="table-like"></div>
+
+      <div class="cta-row">
+        <button id="logout-btn" class="btn btn-secondary" type="button">Log out</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="assets/js/profile.js"></script>
+</body>
+</html>
+
