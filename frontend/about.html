@@ -4,6 +4,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script>
+  (function () {
+    var h = location.hostname;
+    if (h !== 'localhost' && h !== '127.0.0.1') {
+      window.APP_API_BASE_OVERRIDE = 'https://hole-in-the-wall.onrender.com/api';
+    }
+  })();
+  </script>
+
   <title>About | Hole in the Wall</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
@@ -67,7 +77,8 @@
       </div>
     </div>
   </main>
-  <script src="assets/js/app.js?v=2"></script>
+  <script src="assets/js/api-config.js?v=1"></script>
+  <script src="assets/js/app.js?v=3"></script>
 </body>
 
 </html>

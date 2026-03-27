@@ -1,11 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script>
+    (function () {
+      var h = location.hostname;
+      if (h !== 'localhost' && h !== '127.0.0.1') {
+        window.APP_API_BASE_OVERRIDE = 'https://hole-in-the-wall.onrender.com/api';
+      }
+    })();
+  </script>
+
   <title>Sign In | Hole in the Wall</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
+
 <body>
   <header class="topbar">
     <div class="container nav">
@@ -26,10 +38,11 @@
       <p class="helper">Choose what you want to do. You can still browse About and Explore without signing in.</p>
 
       <div class="cta-row" style="justify-content: flex-start; gap: 12px;">
-        <a class="btn btn-primary" href="login.html">Log in</a>
+        <a class="btn btn-primary" href="login.html">Sign in</a>
         <a class="btn btn-secondary" href="signup.html">Create an account</a>
       </div>
     </div>
   </main>
 </body>
+
 </html>

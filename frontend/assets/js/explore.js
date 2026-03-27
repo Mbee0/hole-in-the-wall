@@ -1,4 +1,4 @@
-const EXPLORE_API_BASE = `http://${window.location.hostname}:5000/api`;
+const EXPLORE_API_BASE = window.getApiBase();
 
 let map;
 let allBusinesses = [];
@@ -295,3 +295,4 @@ document.addEventListener('DOMContentLoaded', async () => {
   await syncExploreAuthNav();
   await initMap();
 });
+

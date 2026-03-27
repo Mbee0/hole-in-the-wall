@@ -1,4 +1,4 @@
-const API_BASE = `http://${window.location.hostname}:5000/api`;
+const API_BASE = window.getApiBase();
 
 function getCheckedValues(selector) {
   return Array.from(document.querySelectorAll(`${selector}:checked`)).map((el) => el.value);
@@ -74,3 +74,4 @@ document.addEventListener('DOMContentLoaded', async () => {
   const form = document.getElementById('business-form');
   if (form) form.addEventListener('submit', submitBusiness);
 });
+

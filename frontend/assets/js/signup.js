@@ -1,4 +1,4 @@
-const API_BASE = `http://${window.location.hostname}:5000/api`;
+const API_BASE = window.getApiBase();
 
 function setMessage(text) {
   const el = document.getElementById('auth-message');
@@ -68,4 +68,5 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('signup-form');
   if (form) form.addEventListener('submit', submitSignup);
 });
+
 

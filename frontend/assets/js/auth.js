@@ -1,4 +1,4 @@
-const API_BASE = `http://${window.location.hostname}:5000/api`;
+const API_BASE = window.getApiBase();
 
 async function submitAuth(event) {
   event.preventDefault();
@@ -48,3 +48,4 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('auth-form');
   if (form) form.addEventListener('submit', submitAuth);
 });
+

@@ -1,4 +1,4 @@
-const API_BASE = `http://${window.location.hostname}:5000/api`;
+const API_BASE = window.getApiBase();
 
 function setMessage(text) {
   const el = document.getElementById('customer-message');
@@ -270,4 +270,5 @@ async function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
 

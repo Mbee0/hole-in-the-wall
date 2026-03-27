@@ -1,0 +1,12 @@
+# Optional: deploy as a Render Blueprint, or mirror these settings on a manual Web Service.
+# https://render.com/docs/yaml-spec
+services:
+  - type: web
+    name: hole-in-the-wall-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.0"
