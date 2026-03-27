@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Log In | Hole in the Wall</title>
+  <title>Sign In | Hole in the Wall</title>
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
+
 <body>
   <header class="topbar">
     <div class="container nav">
@@ -16,14 +18,14 @@
       <nav class="nav-links">
         <a href="about.html">About</a>
         <a href="explore.html">Explore</a>
-        <a href="login.html" class="btn btn-primary">Sign In</a>
+        <a href="login.html" class="sign-in">Sign In</a>
       </nav>
     </div>
   </header>
 
   <main class="auth-wrap container">
     <div class="auth-card">
-      <h1>Log in</h1>
+      <h1>Sign in</h1>
       <p class="helper">Use your email and password to access your dashboard.</p>
 
       <form id="login-form">
@@ -32,18 +34,26 @@
 
         <label for="password">Password</label>
         <input id="password" type="password" placeholder="Your password" required>
+        <p id="auth-message" class="helper"></p>
 
         <div class="cta-row">
-          <button class="btn btn-primary" type="submit">Log in</button>
+          <button class="btn btn-primary" type="submit">Sign in</button>
+        </div>
+
+        <p class="helper" style="margin-top:12px;">
+          <a href="reset-password.html">Forgot password?</a>
+        </p>
+
+        <hr style="margin:18px 0; border:0; border-top:1px solid rgba(139, 91, 76, 0.2);" />
+        <p class="helper">If you don't have an account, create one here:</p>
+        <div class="cta-row" style="margin-top:10px;">
           <a href="signup.html" class="btn btn-secondary">Create an account</a>
         </div>
       </form>
-
-      <p id="auth-message" class="helper"></p>
     </div>
   </main>
 
   <script src="assets/js/login.js"></script>
 </body>
-</html>
 
+</html>

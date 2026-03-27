@@ -12,6 +12,7 @@ from routes.onboarding import (
     business_inquiries_bp,
     business_verify_bp,
 )
+from routes.password_reset import bp as password_reset_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -35,6 +36,7 @@ app.register_blueprint(customer_bp)
 app.register_blueprint(student_verify_bp)
 app.register_blueprint(business_inquiries_bp)
 app.register_blueprint(business_verify_bp)
+app.register_blueprint(password_reset_bp)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)

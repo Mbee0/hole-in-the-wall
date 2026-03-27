@@ -39,6 +39,7 @@ businesses_collection = db["businesses"]
 deals_collection = db["deals"]
 student_email_verifications_collection = db["student_email_verifications"]
 business_inquiries_collection = db["business_inquiries"]
+password_reset_codes_collection = db["password_reset_codes"]
 
 # Ensure email uniqueness at the database layer (optional; can be disabled in CI).
 if getattr(Config, "MONGO_CREATE_INDEXES", False):
@@ -59,5 +60,11 @@ if getattr(Config, "MONGO_CREATE_INDEXES", False):
         business_inquiries_collection.create_index("email")
         business_inquiries_collection.create_index("status")
         business_inquiries_collection.create_index("onboarding_code_expires_at")
+    except Exception:
+        pass
+
+    try:
+        password_reset_codes_collection.create_index("email")
+        password_reset_codes_collection.create_index("expires_at")
     except Exception:
         pass
