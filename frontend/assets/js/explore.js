@@ -207,32 +207,8 @@ function normalizeCampusName(name) {
 function centerForCampusName(campusName) {
   const normalized = normalizeCampusName(campusName);
   if (!normalized) return null;
-
-  // Starter mapping for common SoCal campuses; easy to extend.
-  const schoolCenters = {
-    ucla: [34.0689, -118.4452],
-    'university of california los angeles': [34.0689, -118.4452],
-    usc: [34.0224, -118.2851],
-    'university of southern california': [34.0224, -118.2851],
-    uci: [33.6405, -117.8443],
-    'university of california irvine': [33.6405, -117.8443],
-    ucsd: [32.8801, -117.2340],
-    'university of california san diego': [32.8801, -117.2340],
-    sdsu: [32.7757, -117.0719],
-    'san diego state university': [32.7757, -117.0719],
-    csuf: [33.8823, -117.8850],
-    'cal state fullerton': [33.8823, -117.8850],
-    'california state university fullerton': [33.8823, -117.8850],
-    csulb: [33.7838, -118.1141],
-    'cal state long beach': [33.7838, -118.1141],
-    'california state university long beach': [33.7838, -118.1141],
-  };
-
-  if (schoolCenters[normalized]) return schoolCenters[normalized];
-
-  // Best-effort fuzzy match.
-  for (const [key, coords] of Object.entries(schoolCenters)) {
-    if (normalized.includes(key) || key.includes(normalized)) return coords;
+  if (window.SchoolDirectory?.centerForCampusName) {
+    return window.SchoolDirectory.centerForCampusName(campusName);
   }
   return null;
 }
@@ -252,7 +228,13 @@ async function tryLoadStudentCenter() {
     });
     const prefData = await prefResponse.json();
     const campusName = prefData?.preferences?.campus_name || '';
-    return centerForCampusName(campusName);
+    const prefCenter = centerForCampusName(campusName);
+    if (prefCenter) return prefCenter;
+
+    // Fallback: infer from email domain if campus preference isn't set.
+    const email = meData?.user?.email || '';
+    const inferred = window.SchoolDirectory?.inferSchoolFromEmail?.(email);
+    return inferred?.center || null;
   } catch {
     return null;
   }

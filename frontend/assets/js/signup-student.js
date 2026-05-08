@@ -63,15 +63,42 @@ document.addEventListener('DOMContentLoaded', () => {
   const createBtn = document.getElementById('student-create-account');
   const signInNowBtn = document.getElementById('student-signin-now');
   const backBtn = document.getElementById('student-back-to-signup');
+  const campusInput = document.getElementById('campus-name');
+  const schoolList = document.getElementById('school-list');
 
   let storedEmail = '';
   let storedCode = '';
+
+  // Populate campus autocomplete list from shared directory (if present).
+  if (schoolList && window.SchoolDirectory?.allSchoolDisplayNames) {
+    const names = window.SchoolDirectory.allSchoolDisplayNames();
+    schoolList.innerHTML = names.map((n) => `<option value="${n}"></option>`).join('');
+  }
+
+  function maybeAutofillCampusFromEmail(email) {
+    if (!campusInput) return;
+    if (!window.SchoolDirectory?.inferSchoolFromEmail) return;
+    const inferred = window.SchoolDirectory.inferSchoolFromEmail(email);
+    if (!inferred?.name) return;
+    // Only autofill if user hasn't typed a campus yet.
+    if ((campusInput.value || '').trim()) return;
+    campusInput.value = inferred.name;
+  }
 
   if (backBtn) {
     backBtn.addEventListener('click', () => {
       setCardMode('signup');
       if (signInNowBtn) signInNowBtn.style.display = 'none';
       setMessage('');
+    });
+  }
+
+  if (emailInput) {
+    emailInput.addEventListener('input', () => {
+      maybeAutofillCampusFromEmail(emailInput.value);
+    });
+    emailInput.addEventListener('blur', () => {
+      maybeAutofillCampusFromEmail(emailInput.value);
     });
   }
 
@@ -86,6 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
         setMessage('Please use a .edu email.');
         return;
       }
+
+      maybeAutofillCampusFromEmail(email);
 
       sendCodeBtn.disabled = true;
       setMessage('');
@@ -172,6 +201,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!storedCode) {
           setMessage('Missing verification code.');
           return;
+        }
+
+        // If campus name is blank, infer from email domain.
+        if (!preferences.campus_name && window.SchoolDirectory?.inferSchoolFromEmail) {
+          const inferred = window.SchoolDirectory.inferSchoolFromEmail(storedEmail);
+          if (inferred?.name) preferences.campus_name = inferred.name;
         }
 
         const response = await fetch(`${API_BASE}/auth/student/verify/confirm`, {

@@ -70,6 +70,75 @@
     </section>
 
     <section id="panel-businesses" class="admin-section" role="tabpanel" hidden>
+      <h2>Create unclaimed listing</h2>
+      <p class="small">Add a business you already know about (Yelp-style). It will show as <strong>unclaimed</strong> until an owner account claims it.</p>
+      <form id="admin-create-unclaimed" class="card" style="margin:12px 0 18px;">
+        <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
+          <label>Business name
+            <input id="admin-biz-name" type="text" required placeholder="Uncle Chuang's Bakery">
+          </label>
+          <label>Category
+            <select id="admin-biz-category">
+              <option>Restaurant</option>
+              <option>Bakery</option>
+              <option>Cafe</option>
+              <option>Catering</option>
+              <option>Late Night</option>
+            </select>
+          </label>
+          <label>Phone
+            <input id="admin-biz-phone" type="tel" placeholder="(909) 468-1075">
+          </label>
+        </div>
+
+        <label style="margin-top:12px;">Address
+          <input id="admin-biz-address" type="text" required placeholder="3580 W Temple Ave suite g, Pomona, CA 91768">
+        </label>
+        <p class="small" id="admin-address-geocode-hint">Type at least three characters, then pick an address suggestion to save coordinates.</p>
+        <ul id="admin-address-suggestions" class="portal-address-suggestions" role="listbox" hidden></ul>
+
+        <div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:12px;">
+          <label>Latitude (optional)
+            <input id="admin-biz-lat" type="number" step="any" placeholder="34.0">
+          </label>
+          <label>Longitude (optional)
+            <input id="admin-biz-lng" type="number" step="any" placeholder="-117.7">
+          </label>
+        </div>
+
+        <label style="margin-top:12px;">Deal summary (shows on listing)
+          <input id="admin-biz-deal-summary" type="text" placeholder="10% off all purchases with a student ID">
+        </label>
+
+        <label style="margin-top:12px;">Offer types
+          <div class="checkbox-row">
+            <label><input type="checkbox" class="admin-offer-type" value="deals" checked> Deals</label>
+            <label><input type="checkbox" class="admin-offer-type" value="catering"> Catering</label>
+            <label><input type="checkbox" class="admin-offer-type" value="fundraising"> Fundraising</label>
+          </div>
+        </label>
+
+        <label style="margin-top:12px;">Create an initial deal post (optional)
+          <div class="checkbox-row">
+            <label><input type="checkbox" id="admin-create-deal" checked> Yes, add a deal post</label>
+          </div>
+        </label>
+
+        <div id="admin-deal-fields" style="margin-top:10px;">
+          <label>Deal title
+            <input id="admin-deal-title" type="text" placeholder="10% off with student ID">
+          </label>
+          <label style="margin-top:10px;">Deal details
+            <textarea id="admin-deal-description" rows="3" placeholder="10% off all purchases with a student ID. Ongoing."></textarea>
+          </label>
+        </div>
+
+        <div class="cta-row" style="margin-top:12px;">
+          <button type="submit" class="btn btn-primary">Create listing</button>
+        </div>
+        <p id="admin-create-msg" class="helper"></p>
+      </form>
+
       <h2>Awaiting approval</h2>
       <p class="small">New inquiries appear here first. Approving sends the onboarding email with a code.</p>
       <div id="pending-wrap" class="admin-panels"></div>

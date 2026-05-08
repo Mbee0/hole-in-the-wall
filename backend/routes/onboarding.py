@@ -75,6 +75,14 @@ def student_verify_start():
         student_email_verifications_collection.delete_many({"email": email, "purpose": "student_signup"})
         student_email_verifications_collection.insert_one(ver_doc)
 
+        # Dev convenience: allow bypassing email delivery entirely while still creating a pending code doc.
+        # This avoids being blocked by external email providers during local testing.
+        if Config.STUDENT_VERIFY_BYPASS:
+            payload = {"message": "Verification bypass enabled (no email sent)."}
+            if getattr(Config, "FLASK_ENV", "development") == "development":
+                payload["code"] = code
+            return jsonify(payload), 200
+
         try:
             send_email(
                 to_email=email,

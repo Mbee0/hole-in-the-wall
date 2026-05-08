@@ -64,7 +64,8 @@
 
           <h2>Preferences</h2>
           <label for="campus-name">Campus name</label>
-          <input id="campus-name" type="text" placeholder="e.g., CSU" />
+          <input id="campus-name" type="text" placeholder="Start typing your school…" list="school-list" />
+          <datalist id="school-list"></datalist>
 
           <label>Preferred categories</label>
           <div class="checkbox-row">
@@ -100,6 +101,7 @@
   </main>
 
   <script src="assets/js/api-config.js?v=1"></script>
+  <script src="assets/js/schools.js?v=1"></script>
   <script src="assets/js/signup-student.js?v=4"></script>
 </body>
 

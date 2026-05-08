@@ -245,3 +245,109 @@ def admin_businesses():
             "businesses": out_businesses,
         }
     ), 200
+
+
+@admin_bp.post("/businesses/unclaimed")
+@admin_key_required
+def admin_create_unclaimed_business():
+    """
+    Create an unclaimed business listing (Yelp-style) with no owner_user_id.
+    Optionally create an initial deal post tied to the listing.
+    """
+    payload = request.get_json(force=True) or {}
+
+    name = (payload.get("name") or "").strip()
+    if not name:
+        return jsonify({"error": "name is required"}), 400
+
+    address = (payload.get("address") or "").strip()
+    if not address:
+        return jsonify({"error": "address is required"}), 400
+
+    category = (payload.get("category") or "Restaurant").strip() or "Restaurant"
+    phone = (payload.get("phone") or "").strip()
+    story = payload.get("story") or ""
+    deal_summary = payload.get("deal_summary") or ""
+
+    lat = payload.get("lat")
+    lng = payload.get("lng")
+    try:
+        lat = float(lat) if lat not in (None, "") else None
+    except Exception:
+        lat = None
+    try:
+        lng = float(lng) if lng not in (None, "") else None
+    except Exception:
+        lng = None
+
+    offer_types = payload.get("offer_types") or []
+    deal_focus = payload.get("deal_focus") or []
+    if not isinstance(offer_types, list):
+        offer_types = []
+    if not isinstance(deal_focus, list):
+        deal_focus = []
+    allowed_offer_types = {"deals", "catering", "fundraising"}
+    allowed_deal_focus = {"meals", "drinks", "dessert"}
+    offer_types = [x for x in offer_types if isinstance(x, str) and x in allowed_offer_types]
+    deal_focus = [x for x in deal_focus if isinstance(x, str) and x in allowed_deal_focus]
+
+    # Prevent accidental duplicates: same name + address (case-insensitive).
+    existing = businesses_collection.find_one(
+        {
+            "name": {"$regex": f"^{name}$", "$options": "i"},
+            "address": {"$regex": f"^{address}$", "$options": "i"},
+        }
+    )
+    if existing:
+        return jsonify({"error": "Business already exists with same name + address.", "id": str(existing["_id"])}), 409
+
+    biz_doc = {
+        "name": name,
+        "category": category,
+        "address": address,
+        "phone": phone,
+        "story": story,
+        "claimed": False,
+        "deal_summary": deal_summary,
+        "lat": lat,
+        "lng": lng,
+        "offer_types": offer_types,
+        "deal_focus": deal_focus,
+        "owner_user_id": None,
+        "locations": [
+            {
+                "id": f"loc_{ObjectId()}",
+                "label": "",
+                "address": address,
+                "lat": lat,
+                "lng": lng,
+                "phone": phone,
+                "is_primary": True,
+            }
+        ],
+    }
+    result = businesses_collection.insert_one(biz_doc)
+    biz_id = str(result.inserted_id)
+
+    created_deal = None
+    if payload.get("create_deal"):
+        deal_title = (payload.get("deal_title") or "").strip()
+        deal_description = payload.get("deal_description") or ""
+        if deal_title:
+            deal_doc = {
+                "business_id": biz_id,
+                "business_name": name,
+                "title": deal_title,
+                "description": deal_description,
+                "deal_type": payload.get("deal_type") or "Student Deal",
+                "valid_from": payload.get("valid_from") or "",
+                "expires": "",
+                "no_end_date": True,
+                "student_only": True,
+                "active": True,
+                "image_urls": [],
+            }
+            dres = deals_collection.insert_one(deal_doc)
+            created_deal = {"id": str(dres.inserted_id), "title": deal_title}
+
+    return jsonify({"message": "Unclaimed business created.", "business_id": biz_id, "deal": created_deal}), 201
