@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script>
+    (function () {
+      var h = location.hostname;
+      if (h !== 'localhost' && h !== '127.0.0.1') {
+        window.APP_API_BASE_OVERRIDE = 'https://hole-in-the-wall.onrender.com/api';
+      }
+    })();
+  </script>
+
+  <title>Admin | Hole in the Wall</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="index.html">
+        <img src="assets/images/logo.png" alt="Hole in the Wall logo">
+        <span>Hole in the Wall</span>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">Go Back Home</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container section">
+    <h1>Admin dashboard</h1>
+    <p class="helper">Review student accounts for unusual activity, approve business inquiries, and inspect
+      registered businesses. Uses the same <code>ADMIN_API_KEY</code> as the approval API.</p>
+
+    <div class="admin-toolbar">
+      <label>
+        Admin API key
+        <input type="password" id="admin-api-key" autocomplete="off" placeholder="Paste server key">
+      </label>
+      <button type="button" class="btn btn-secondary" id="admin-save-key">Remember in browser</button>
+      <button type="button" class="btn btn-primary" id="admin-refresh">Refresh data</button>
+    </div>
+    <p id="admin-message" class="helper" aria-live="polite"></p>
+
+    <div class="admin-tabs" role="tablist">
+      <button type="button" class="admin-tab active" data-tab="users" role="tab" aria-selected="true">Users</button>
+      <button type="button" class="admin-tab" data-tab="businesses" role="tab" aria-selected="false">Businesses</button>
+    </div>
+
+    <section id="panel-users" class="admin-section" role="tabpanel">
+      <h2>Accounts</h2>
+      <p class="small">Shows display name, role, and automated activity signals (not a guarantee of abuse).</p>
+      <div id="users-loading" class="helper">Load data with your admin key.</div>
+      <div class="admin-table-wrap" id="users-table-wrap" hidden>
+        <table class="admin-table" id="users-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Activity check</th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="panel-businesses" class="admin-section" role="tabpanel" hidden>
+      <h2>Awaiting approval</h2>
+      <p class="small">New inquiries appear here first. Approving sends the onboarding email with a code.</p>
+      <div id="pending-wrap" class="admin-panels"></div>
+
+      <h2>Onboarding in progress</h2>
+      <p class="small">Approved inquiries where the restaurant has not finished creating an account yet.</p>
+      <div id="awaiting-wrap" class="admin-panels"></div>
+
+      <h2>Registered businesses</h2>
+      <p class="small">Full listing with owner contact and deal (post) counts.</p>
+      <div id="biz-loading" class="helper"></div>
+      <div id="biz-grid" class="admin-panels"></div>
+    </section>
+  </main>
+
+  <div id="admin-toast-root" class="admin-toast-root" aria-live="polite" aria-relevant="additions"></div>
+
+  <script src="assets/js/api-config.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+
+</html>

@@ -38,6 +38,9 @@ def serialize_deal(deal):
         "description": deal.get("description"),
         "deal_type": deal.get("deal_type") or deal.get("type") or "Student Deal",
         "expires": deal.get("expires"),
+        "valid_from": deal.get("valid_from") or "",
+        "no_end_date": bool(deal.get("no_end_date", False)),
+        "image_urls": deal.get("image_urls") or [],
         "student_only": bool(deal.get("student_only", False)),
         "active": deal.get("active", True),
     }

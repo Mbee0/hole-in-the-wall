@@ -1,4 +1,4 @@
-import os
+how can i import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -27,6 +27,10 @@ class Config:
     # Avoid slow/fragile Mongo startup behavior during unit tests.
     MONGO_CREATE_INDEXES = os.getenv("MONGO_CREATE_INDEXES", "false").lower() == "true"
 
+    # Atlas TLS on some hosts (e.g. Render): if handshake still fails after certifi, try "true"
+    # only after reviewing https://www.mongodb.com/docs/drivers/python/pymongo/ (OCSP tradeoffs).
+    MONGO_TLS_DISABLE_OCSP = os.getenv("MONGO_TLS_DISABLE_OCSP", "false").lower() == "true"
+
     # SMTP email delivery (used for verification/onboarding codes).
     SMTP_HOST = os.getenv("SMTP_HOST", "")
     SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
@@ -43,3 +47,26 @@ class Config:
 
     # Admin approval for business inquiries.
     ADMIN_API_KEY = os.getenv("ADMIN_API_KEY", "")
+
+    # Address autocomplete (server-side). Prefer Mapbox for production-quality matching.
+    MAPBOX_ACCESS_TOKEN = os.getenv("MAPBOX_ACCESS_TOKEN", "").strip()
+    # Required by Nominatim when Mapbox is unset; identify your app per OSM policy.
+    NOMINATIM_USER_AGENT = os.getenv(
+        "NOMINATIM_USER_AGENT",
+        "HoleInTheWall/1.0 (campus demo; contact configured in env)",
+    ).strip()
+
+    # HTTP email provider (Resend). Use this on hosts that block raw SMTP (e.g. Render).
+    # When set, emailer.py will use Resend's HTTPS API instead of smtplib.
+    RESEND_API_KEY = os.getenv("RESEND_API_KEY", "").strip()
+    # The verified "From" address Resend will send as. Use Resend's sandbox sender
+    # (onboarding@resend.dev) for testing or a verified domain for production.
+    EMAIL_FROM = os.getenv("EMAIL_FROM", "").strip()
+    # Optional: sets a Reply-To header so users can reply directly to your real inbox.
+    EMAIL_REPLY_TO = os.getenv("EMAIL_REPLY_TO", "").strip()
+
+    # Cloudinary image hosting. The cloudinary SDK reads CLOUDINARY_URL from env automatically.
+    CLOUDINARY_URL = os.getenv("CLOUDINARY_URL", "").strip()
+    CLOUDINARY_UPLOAD_FOLDER = os.getenv("CLOUDINARY_UPLOAD_FOLDER", "hole-in-the-wall").strip()
+    # Hard cap on file size so uploads don't exhaust memory or quota.
+    UPLOAD_MAX_BYTES = int(os.getenv("UPLOAD_MAX_BYTES", str(5 * 1024 * 1024)))  # 5 MB

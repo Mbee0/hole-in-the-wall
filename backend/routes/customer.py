@@ -121,3 +121,20 @@ def save_deal(user):
 
     return jsonify({"message": "Deal saved"}), 201
 
+
+@bp.post("/unsave-deal")
+@account_type_required("consumer")
+def unsave_deal(user):
+    payload = request.get_json(force=True) or {}
+    deal_id = (payload.get("deal_id") or "").strip()
+    if not deal_id:
+        return jsonify({"error": "deal_id is required"}), 400
+
+    # Don't require the deal to still exist; allow removing stale ids.
+    users_collection.update_one(
+        {"_id": user["_id"]},
+        {"$pull": {"saved_deals": deal_id}},
+    )
+
+    return jsonify({"message": "Deal unsaved"}), 200
+

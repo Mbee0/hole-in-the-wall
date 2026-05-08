@@ -5,6 +5,8 @@ let allBusinesses = [];
 let allDeals = [];
 let activeMarkers = [];
 let studentCenter = null;
+let currentUser = null;
+let savedDealIds = new Set();
 const selectedPrograms = new Set();
 const selectedSubtypes = new Set();
 
@@ -33,9 +35,11 @@ async function syncExploreAuthNav() {
       credentials: 'include',
     });
     const data = await response.json();
-    setExploreNavForAuth(data?.user || null);
+    currentUser = data?.user || null;
+    setExploreNavForAuth(currentUser);
   } catch {
     // Keep public-state nav if auth check fails.
+    currentUser = null;
   }
 }
 
@@ -71,6 +75,103 @@ function clearMarkers() {
 function getDealForBusiness(businessName, fallbackSummary) {
   const match = allDeals.find((d) => (d.business_name || '').toLowerCase() === (businessName || '').toLowerCase());
   return match?.title || fallbackSummary || 'No active deal posted yet';
+}
+
+function getDealObjectForBusiness(business) {
+  if (!business) return null;
+  const bizId = (business.id || '').toString();
+  if (bizId) {
+    const byId = allDeals.find((d) => (d.business_id || '').toString() === bizId);
+    if (byId) return byId;
+  }
+  const bizName = (business.name || '').toLowerCase().trim();
+  if (bizName) {
+    const byName = allDeals.find((d) => (d.business_name || '').toLowerCase().trim() === bizName);
+    if (byName) return byName;
+  }
+  return null;
+}
+
+async function refreshSavedDealIds() {
+  savedDealIds = new Set();
+  if (!currentUser || currentUser.account_type !== 'consumer') return;
+  try {
+    const resp = await fetch(`${EXPLORE_API_BASE}/customer/saved-deals`, { credentials: 'include' });
+    const data = await resp.json();
+    const deals = data?.saved_deals || [];
+    deals.forEach((d) => {
+      if (d?.id) savedDealIds.add(d.id);
+    });
+  } catch {
+    // Non-fatal on explore.
+  }
+}
+
+async function saveDealFromExplore(dealId) {
+  if (!dealId) return;
+  try {
+    const resp = await fetch(`${EXPLORE_API_BASE}/customer/save-deal`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ deal_id: dealId }),
+    });
+    if (resp.status === 401 || resp.status === 403) {
+      window.location.href = 'login.html';
+      return;
+    }
+    if (!resp.ok) {
+      let msg = 'Failed to save deal.';
+      try {
+        const data = await resp.json();
+        msg = data?.error || msg;
+      } catch {}
+      alert(msg);
+      return;
+    }
+    savedDealIds.add(dealId);
+    applyCategoryFilter();
+  } catch {
+    alert('Could not reach backend to save deal.');
+  }
+}
+
+async function unsaveDealFromExplore(dealId) {
+  if (!dealId) return;
+  try {
+    const resp = await fetch(`${EXPLORE_API_BASE}/customer/unsave-deal`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ deal_id: dealId }),
+    });
+    if (resp.status === 401 || resp.status === 403) {
+      window.location.href = 'login.html';
+      return;
+    }
+    if (!resp.ok) {
+      let msg = 'Failed to unsave deal.';
+      try {
+        const data = await resp.json();
+        msg = data?.error || msg;
+      } catch {}
+      alert(msg);
+      return;
+    }
+    savedDealIds.delete(dealId);
+    applyCategoryFilter();
+  } catch {
+    alert('Could not reach backend to unsave deal.');
+  }
+}
+
+async function toggleSavedDeal(dealId) {
+  if (!dealId) return;
+  if (savedDealIds.has(dealId)) {
+    await unsaveDealFromExplore(dealId);
+  } else {
+    await saveDealFromExplore(dealId);
+  }
 }
 
 function normalizedList(input) {
@@ -171,10 +272,33 @@ function renderResults(items) {
 
   items.forEach((item) => {
     const dealText = getDealForBusiness(item.name, item.deal_summary);
+    const dealObj = getDealObjectForBusiness(item);
+    const isConsumer = currentUser?.account_type === 'consumer';
+    const hasDeal = !!dealObj;
+    const canSave = hasDeal && isConsumer;
+    const isSaved = hasDeal && savedDealIds.has(dealObj.id);
     const card = document.createElement('div');
-    card.className = 'result-card';
+    card.className = 'result-card is-clickable';
+    const bookmarkSvg = `
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M7 3h10a2 2 0 0 1 2 2v16l-7-4-7 4V5a2 2 0 0 1 2-2z" stroke-width="2" stroke-linejoin="round"/>
+      </svg>
+    `;
     card.innerHTML = `
-      <h3>${item.name || 'Business'}</h3>
+      <div class="card-top">
+        <h3>${item.name || 'Business'}</h3>
+        ${hasDeal ? `
+          ${
+            isConsumer
+              ? `<button class="save-bookmark ${isSaved ? 'is-saved' : ''}" data-action="toggle-save" title="${isSaved ? 'Saved' : 'Save deal'}" aria-label="${isSaved ? 'Saved' : 'Save deal'}">
+                  ${bookmarkSvg}
+                </button>`
+              : `<a class="save-bookmark" href="login.html" title="Sign in to save">
+                  ${bookmarkSvg}
+                </a>`
+          }
+        ` : ''}
+      </div>
       <div class="meta">
         <span>${item.category || 'Uncategorized'}</span>
         <span>${item.address || 'Address unavailable'}</span>
@@ -182,9 +306,24 @@ function renderResults(items) {
       <div>${dealText}</div>
       <div class="meta">
         <span class="filter-chip">${item.claimed ? 'Claimed' : 'Unclaimed'}</span>
-        <a href="business.html?id=${encodeURIComponent(item.id || '')}" class="btn btn-secondary">View details</a>
       </div>
     `;
+    if (item.id) {
+      card.addEventListener('click', () => {
+        window.location.href = `business.html?id=${encodeURIComponent(item.id)}`;
+      });
+    }
+
+    if (canSave) {
+      const btn = card.querySelector('[data-action="toggle-save"]');
+      if (btn) {
+        btn.addEventListener('click', async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          await toggleSavedDeal(dealObj.id);
+        });
+      }
+    }
     list.appendChild(card);
 
     if (typeof item.lat === 'number' && typeof item.lng === 'number') {
@@ -279,6 +418,7 @@ async function initMap() {
   const list = document.getElementById('results-list');
   try {
     await loadData();
+    await refreshSavedDealIds();
     applyCategoryFilter();
   } catch (err) {
     if (list) list.innerHTML = '<p class="helper">Could not load map businesses from backend.</p>';

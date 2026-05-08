@@ -7,6 +7,7 @@ from flask import Blueprint, jsonify, request, session
 
 from config import Config
 from services.auth_helpers import hash_password, serialize_user
+from services.authz import account_type_required
 from services.db import (
     student_email_verifications_collection,
     business_inquiries_collection,
@@ -183,6 +184,45 @@ def create_business_inquiry():
     return jsonify({"message": "Inquiry submitted. Awaiting approval.", "id": str(result.inserted_id)}), 201
 
 
+def _inquiry_snapshot_for_restaurant(doc):
+    if not doc:
+        return None
+    submitted = doc.get("submitted_at")
+    submitted_iso = None
+    if submitted is not None:
+        try:
+            if getattr(submitted, "tzinfo", None) is None:
+                submitted = submitted.replace(tzinfo=timezone.utc)
+            submitted_iso = submitted.isoformat()
+        except Exception:
+            submitted_iso = None
+    return {
+        "id": str(doc["_id"]),
+        "business_name": doc.get("business_name") or "",
+        "phone_number": doc.get("phone_number") or "",
+        "inquirer_name": doc.get("inquirer_name") or "",
+        "deal_types": doc.get("deal_types") or [],
+        "blurb": doc.get("blurb") or "",
+        "email": doc.get("email") or "",
+        "status": doc.get("status"),
+        "submitted_at": submitted_iso,
+    }
+
+
+@business_inquiries_bp.route("/mine", methods=["GET"])
+@account_type_required("business")
+def get_my_submitted_inquiry(user):
+    """Latest business inquiry tied to this account (for pre-filling the restaurant portal)."""
+    uid = str(user["_id"])
+    email = _normalize_email(user.get("email") or "")
+
+    inquiry = business_inquiries_collection.find_one({"onboarded_user_id": uid})
+    if not inquiry and email:
+        inquiry = business_inquiries_collection.find_one({"email": email}, sort=[("submitted_at", -1)])
+
+    return jsonify({"inquiry": _inquiry_snapshot_for_restaurant(inquiry)}), 200
+
+
 @business_inquiries_bp.route("/<inquiry_id>/approve", methods=["POST"])
 def approve_business_inquiry(inquiry_id: str):
     admin_key = request.headers.get("X-Admin-Api-Key", "")
@@ -226,6 +266,55 @@ def approve_business_inquiry(inquiry_id: str):
         return jsonify({"error": f"Inquiry approved, but onboarding email failed: {str(exc)}"}), 502
 
     return jsonify({"message": "Inquiry approved. Onboarding email sent."}), 200
+
+
+@business_inquiries_bp.route("/<inquiry_id>/resend-code", methods=["POST"])
+def resend_onboarding_code(inquiry_id: str):
+    """Regenerate onboarding code and email it again (admin only). Inquiry must already be approved."""
+    admin_key = request.headers.get("X-Admin-Api-Key", "")
+    if not Config.ADMIN_API_KEY or admin_key != Config.ADMIN_API_KEY:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    try:
+        inquiry = business_inquiries_collection.find_one({"_id": ObjectId(inquiry_id)})
+    except Exception:
+        inquiry = None
+
+    if not inquiry:
+        return jsonify({"error": "Inquiry not found"}), 404
+    if inquiry.get("status") != "approved":
+        return jsonify({"error": "Only approved inquiries can receive a new code."}), 400
+
+    email = inquiry.get("email")
+    if not email:
+        return jsonify({"error": "Inquiry has no email."}), 400
+
+    code = _generate_6_digit_code()
+    expires_at = _now_utc() + timedelta(minutes=Config.EMAIL_CODE_EXPIRES_MINUTES)
+
+    business_inquiries_collection.update_one(
+        {"_id": inquiry["_id"]},
+        {
+            "$set": {
+                "onboarding_code_hash": _code_hash(code, email),
+                "onboarding_code_expires_at": expires_at,
+            }
+        },
+    )
+
+    try:
+        send_email(
+            to_email=email,
+            subject="Hole in the Wall: Your business onboarding code",
+            body_text=f"Your business onboarding code is: {code}\n\n"
+                      f"Use it to create your restaurant account password.\n\n"
+                      f"It expires in {Config.EMAIL_CODE_EXPIRES_MINUTES} minutes.\n\n"
+                      f"If you did not request this email, you can ignore it.",
+        )
+    except Exception as exc:
+        return jsonify({"error": f"Could not send email: {str(exc)}"}), 502
+
+    return jsonify({"message": "New onboarding code emailed."}), 200
 
 
 @business_verify_bp.route("/confirm", methods=["POST"])

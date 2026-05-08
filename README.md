@@ -123,3 +123,19 @@ Protected actions:
 - map integration with Mapbox or Leaflet
 - review system
 - recommendation engine
+
+-- Top 10 cust sending money
+SELECT sender id , COUNT (1) AS Num_Transfers
+FROM
+GRAPH_TABLE (PAYMENT_GRAPH
+MATCH (src)
+- Ip
+IS PAYMENT
+WHERE P. payment_type = P2p'
+→>
+(dst)
+COLUMNS (source. uuid AS sender_id)
+)
+GROUP BY sender
+_id
+ORDER BY Num Transfers DESC FETCH FIRST 10 ROWS ONLY;

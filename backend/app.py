@@ -13,6 +13,9 @@ from routes.onboarding import (
     business_verify_bp,
 )
 from routes.password_reset import bp as password_reset_bp
+from routes.admin import admin_bp
+from routes.places import bp as places_bp
+from routes.uploads import bp as uploads_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -37,6 +40,9 @@ app.register_blueprint(student_verify_bp)
 app.register_blueprint(business_inquiries_bp)
 app.register_blueprint(business_verify_bp)
 app.register_blueprint(password_reset_bp)
+app.register_blueprint(admin_bp)
+app.register_blueprint(places_bp)
+app.register_blueprint(uploads_bp)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)

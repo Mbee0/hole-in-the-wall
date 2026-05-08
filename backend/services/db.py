@@ -1,7 +1,35 @@
+import certifi
 from pymongo import MongoClient
+
 from config import Config
 
 DB_INIT_ERROR = None
+
+
+def _mongo_uses_tls(uri: str) -> bool:
+    u = (uri or "").strip().lower()
+    if u.startswith("mongodb+srv://"):
+        return True
+    if "tls=true" in u or "ssl=true" in u:
+        return True
+    if ".mongodb.net" in u:
+        return True
+    return False
+
+
+def _mongo_client_kwargs():
+    uri = (Config.MONGO_URI or "").strip()
+    kwargs = {
+        "serverSelectionTimeoutMS": 5000,
+        "connectTimeoutMS": 5000,
+        "socketTimeoutMS": 5000,
+    }
+    # Minimal containers often lack a full CA store; certifi fixes many Atlas TLS failures on Render.
+    if _mongo_uses_tls(uri):
+        kwargs["tlsCAFile"] = certifi.where()
+    if getattr(Config, "MONGO_TLS_DISABLE_OCSP", False):
+        kwargs["tlsDisableOCSPEndpointCheck"] = True
+    return kwargs
 
 class _UnavailableCollection:
     def __getattr__(self, _name):
@@ -22,12 +50,7 @@ class _UnavailableDB:
 
 
 try:
-    client = MongoClient(
-        Config.MONGO_URI,
-        serverSelectionTimeoutMS=5000,
-        connectTimeoutMS=5000,
-        socketTimeoutMS=5000,
-    )
+    client = MongoClient(Config.MONGO_URI, **_mongo_client_kwargs())
     db = client[Config.MONGO_DB]
 except Exception as exc:
     DB_INIT_ERROR = str(exc)

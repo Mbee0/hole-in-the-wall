@@ -28,7 +28,6 @@
       <nav class="nav-links">
         <a href="about.html">About</a>
         <a href="explore.html">Explore</a>
-        <a href="customer.html">My Deals</a>
         <a href="portal.html" class="btn btn-primary">Restaurant Portal</a>
         <a href="profile.html" class="profile-icon" title="My profile" aria-label="My profile">👤</a>
       </nav>
@@ -38,82 +37,223 @@
   <main class="container section">
     <div class="portal-layout">
       <aside class="panel sidebar-nav">
-        <a class="active" href="#">Overview</a>
-        <a href="#">My Page</a>
-        <a href="#">Deals</a>
-        <a href="#">Catering</a>
-        <a href="#">Reviews</a>
-        <a href="#">Settings</a>
+        <a href="#" class="portal-nav active" data-panel="overview">Overview</a>
+        <a href="#" class="portal-nav" data-panel="my-page">My Page</a>
+        <a href="#" class="portal-nav" data-panel="deals">Deals</a>
+        <a href="#" class="portal-nav" data-panel="catering">Catering</a>
+        <a href="#" class="portal-nav" data-panel="reviews">Reviews</a>
+        <a href="#" class="portal-nav" data-panel="settings">Settings</a>
       </aside>
 
-      <section class="panel portal-section">
-        <h1>Restaurant dashboard</h1>
-        <p class="helper">Use this page to create or claim a page, add your story, and publish student-friendly deals.
-        </p>
+      <div class="portal-sections">
+        <p id="portal-banner" class="helper portal-banner" hidden></p>
+        <p id="portal-message" class="helper portal-global-msg"></p>
 
-        <form id="business-form">
-          <label for="business-name">Business name</label>
-          <input id="business-name" type="text" placeholder="Maple Crumb Bakery" required>
+        <!-- Overview: read-only snapshot -->
+        <section id="panel-overview" class="panel portal-section portal-panel">
+          <h1>Restaurant dashboard</h1>
+          <p class="helper">Overview is read-only. Update your listing under <strong>Settings</strong>; customize what
+            students see under <strong>My Page</strong>.</p>
 
-          <label for="business-category">Category</label>
-          <select id="business-category">
-            <option>Restaurant</option>
-            <option>Bakery</option>
-            <option>Cafe</option>
-            <option>Catering</option>
-          </select>
-
-          <label for="business-address">Address</label>
-          <input id="business-address" type="text" placeholder="12 College Ave">
-
-          <label for="deal-summary">Current deal summary</label>
-          <input id="deal-summary" type="text" placeholder="15% off student combo meals">
-
-          <label>Offer types</label>
-          <div class="checkbox-row">
-            <label><input type="checkbox" class="offer-type" value="deals"> Deals</label>
-            <label><input type="checkbox" class="offer-type" value="catering"> Catering</label>
-            <label><input type="checkbox" class="offer-type" value="fundraising"> Fundraising</label>
+          <div id="overview-empty" class="card" hidden>
+            <p><strong>No business profile yet.</strong> Go to <a href="#" class="portal-jump-settings">Settings</a>
+              to create your listing.</p>
           </div>
 
-          <label>Deal focus (if offering deals)</label>
-          <div class="checkbox-row">
-            <label><input type="checkbox" class="deal-focus" value="meals"> Meals</label>
-            <label><input type="checkbox" class="deal-focus" value="drinks"> Drinks</label>
-            <label><input type="checkbox" class="deal-focus" value="dessert"> Dessert</label>
-          </div>
-
-          <label for="business-story">Business story</label>
-          <textarea id="business-story" placeholder="Tell students what makes your place special."></textarea>
-
-          <div class="cta-row">
-            <button class="btn btn-primary" type="submit">Save business page</button>
-            <button class="btn btn-secondary" type="button">Claim existing page</button>
-          </div>
-          <p id="portal-message" class="helper"></p>
-        </form>
-
-        <div class="section">
-          <h3>Active deals preview</h3>
-          <div class="table-like">
-            <div class="table-row">
-              <strong>Student Tuesday</strong>
-              <span>Public</span>
-              <span>Ends weekly</span>
+          <div id="overview-filled" class="portal-overview-grid" hidden>
+            <div class="card portal-overview-card">
+              <h3>Identity</h3>
+              <dl class="portal-dl">
+                <dt>Name</dt><dd id="ov-name">—</dd>
+                <dt>Category</dt><dd id="ov-category">—</dd>
+                <dt>Address</dt><dd id="ov-address">—</dd>
+                <dt>Deal summary</dt><dd id="ov-deal-summary">—</dd>
+              </dl>
             </div>
-            <div class="table-row">
-              <strong>Club Catering Tray</strong>
-              <span>Inquiry</span>
-              <span>Always on</span>
+            <div class="card portal-overview-card">
+              <h3>Offers</h3>
+              <p id="ov-offer-types" class="small">—</p>
+              <p id="ov-deal-focus" class="small">—</p>
+            </div>
+            <div class="card portal-overview-card portal-overview-wide">
+              <h3>Story</h3>
+              <p id="ov-story" class="small portal-pre-wrap">—</p>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        <!-- My Page: student-facing preview + public fields -->
+        <section id="panel-my-page" class="panel portal-section portal-panel" hidden>
+          <h2>My Page</h2>
+          <p class="helper">Preview matches what students see from the map. Save changes to update the live listing.</p>
+
+          <div id="my-page-needs-business" class="card" hidden>
+            <p>Create a business in <a href="#" class="portal-jump-settings">Settings</a> first.</p>
+          </div>
+
+          <div id="my-page-editor" class="portal-my-page-split" hidden>
+            <div class="portal-preview-column">
+              <h3 class="portal-subhead">Student preview</h3>
+              <div id="portal-live-preview" class="portal-live-preview" aria-label="Live preview of public page"></div>
+              <p class="small"><a id="portal-open-public" href="#" target="_blank" rel="noopener">Open public page</a></p>
+            </div>
+            <div class="portal-form-column">
+              <h3 class="portal-subhead">Gallery &amp; contact</h3>
+              <form id="my-page-form">
+                <label for="mp-gallery">Gallery image URLs (one per line, HTTPS)</label>
+                <textarea id="mp-gallery" rows="5" placeholder="https://example.com/photo1.jpg"></textarea>
+
+                <label for="mp-website">Website</label>
+                <input id="mp-website" type="url" placeholder="https://yourrestaurant.com">
+
+                <label for="mp-phone">Phone</label>
+                <input id="mp-phone" type="tel" placeholder="+1 555 0100">
+
+                <label for="mp-contact-email">Public contact email</label>
+                <input id="mp-contact-email" type="email" placeholder="hello@yourrestaurant.com">
+
+                <label class="checkbox-row portal-checkbox-full">
+                  <input type="checkbox" id="mp-allow-email"> Show contact email on my public page (students can tap to
+                  email)
+                </label>
+
+                <div class="cta-row">
+                  <button type="submit" class="btn btn-primary">Save My Page</button>
+                </div>
+                <p id="my-page-msg" class="helper"></p>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- Deals -->
+        <section id="panel-deals" class="panel portal-section portal-panel" hidden>
+          <h2>Deals</h2>
+          <p class="helper">Manage posts students see on your listing. Add photos as image URLs (optional).</p>
+
+          <div id="deals-needs-business" class="card" hidden>
+            <p>Create a business in <a href="#" class="portal-jump-settings">Settings</a> first.</p>
+          </div>
+
+          <div id="deals-workspace" hidden>
+            <div class="cta-row portal-deals-toolbar">
+              <button type="button" class="btn btn-primary" id="deal-new-btn">New deal post</button>
+            </div>
+
+            <div id="deals-grid" class="portal-deals-grid"></div>
+
+            <div id="deal-editor-card" class="card portal-deal-editor" hidden>
+              <h3 id="deal-editor-title">Edit deal</h3>
+              <form id="deal-form">
+                <input type="hidden" id="deal-id" value="">
+                <label for="deal-title">Title</label>
+                <input id="deal-title" type="text" required placeholder="Student lunch combo">
+
+                <label for="deal-description">Details</label>
+                <textarea id="deal-description" rows="4" placeholder="What students get, limits, ID requirements…"></textarea>
+
+                <label for="deal-images">Deal photo URLs (one per line)</label>
+                <textarea id="deal-images" rows="3" placeholder="https://…"></textarea>
+
+                <label for="deal-valid-from">Valid from (optional)</label>
+                <input id="deal-valid-from" type="date">
+
+                <label class="checkbox-row portal-checkbox-full">
+                  <input type="checkbox" id="deal-ongoing"> No end date (ongoing / unlimited)
+                </label>
+
+                <label for="deal-expires">Ends on</label>
+                <input id="deal-expires" type="date">
+
+                <label class="checkbox-row portal-checkbox-full">
+                  <input type="checkbox" id="deal-student-only" checked> Student-only offer
+                </label>
+
+                <div class="cta-row portal-deal-actions">
+                  <button type="submit" class="btn btn-primary" id="deal-save-btn">Save</button>
+                  <button type="button" class="btn btn-secondary" id="deal-duplicate-btn">Duplicate as new</button>
+                  <button type="button" class="btn btn-secondary" id="deal-cancel-btn">Cancel</button>
+                  <button type="button" class="btn btn-secondary portal-danger-outline" id="deal-delete-btn">Delete</button>
+                </div>
+                <p id="deal-form-msg" class="helper"></p>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- Catering & Reviews placeholders -->
+        <section id="panel-catering" class="panel portal-section portal-panel" hidden>
+          <h2>Catering</h2>
+          <p class="helper">Catering workflows will live here. For now, mark catering interest under <strong>Settings</strong>
+            → offer types.</p>
+        </section>
+
+        <section id="panel-reviews" class="panel portal-section portal-panel" hidden>
+          <h2>Reviews</h2>
+          <p class="helper">Reviews are not enabled yet. This panel will summarize feedback when the feature ships.</p>
+        </section>
+
+        <!-- Settings: editable core listing (writes to DB) -->
+        <section id="panel-settings" class="panel portal-section portal-panel" hidden>
+          <h2>Settings</h2>
+          <p class="helper">These fields power your listing and the read-only <strong>Overview</strong>.</p>
+
+          <form id="settings-form">
+            <label for="settings-name">Business name</label>
+            <input id="settings-name" type="text" placeholder="Maple Crumb Bakery" required>
+
+            <label for="settings-category">Category</label>
+            <select id="settings-category">
+              <option>Restaurant</option>
+              <option>Bakery</option>
+              <option>Cafe</option>
+              <option>Catering</option>
+              <option>Late Night</option>
+            </select>
+
+            <label for="settings-address">Address</label>
+            <p class="small" id="address-geocode-hint">Type at least three characters, then pick a suggestion so the
+              map uses validated coordinates. (Powered by Mapbox if configured, otherwise OpenStreetMap.)</p>
+            <div class="portal-address-wrap">
+              <input id="settings-address" type="text" placeholder="Start typing street or place…" autocomplete="off"
+                spellcheck="false" aria-autocomplete="list" aria-controls="address-suggestions">
+              <ul id="address-suggestions" class="portal-address-suggestions" role="listbox" hidden></ul>
+            </div>
+            <input type="hidden" id="settings-lat" value="">
+            <input type="hidden" id="settings-lng" value="">
+
+            <label for="settings-deal-summary">Current deal summary</label>
+            <input id="settings-deal-summary" type="text" placeholder="15% off student combo meals">
+
+            <label>Offer types</label>
+            <div class="checkbox-row">
+              <label><input type="checkbox" class="settings-offer-type" value="deals"> Deals</label>
+              <label><input type="checkbox" class="settings-offer-type" value="catering"> Catering</label>
+              <label><input type="checkbox" class="settings-offer-type" value="fundraising"> Fundraising</label>
+            </div>
+
+            <label>Deal focus (if offering deals)</label>
+            <div class="checkbox-row">
+              <label><input type="checkbox" class="settings-deal-focus" value="meals"> Meals</label>
+              <label><input type="checkbox" class="settings-deal-focus" value="drinks"> Drinks</label>
+              <label><input type="checkbox" class="settings-deal-focus" value="dessert"> Dessert</label>
+            </div>
+
+            <label for="settings-story">Business story</label>
+            <textarea id="settings-story" placeholder="Tell students what makes your place special."></textarea>
+
+            <div class="cta-row">
+              <button class="btn btn-primary" type="submit" id="settings-submit">Save to database</button>
+            </div>
+            <p id="settings-msg" class="helper"></p>
+          </form>
+        </section>
+      </div>
     </div>
   </main>
 
-  <script src="assets/js/api-config.js?v=1"></script>
-  <script src="assets/js/portal.js?v=1"></script>
+  <script src="assets/js/api-config.js?v=2"></script>
+  <script src="assets/js/portal.js?v=3"></script>
 </body>
 
 </html>

@@ -28,15 +28,18 @@
       <nav class="nav-links">
         <a href="about.html">About</a>
         <a href="explore.html">Explore</a>
-        <a href="customer.html">My Deals</a>
-        <a href="portal.html" class="btn btn-primary">Restaurant Portal</a>
-        <a href="login.html" class="sign-in">Sign In</a>
+        <a id="student-dashboard-link" href="customer.html" style="display:none;">My Deals</a>
+        <a id="restaurant-portal-link" href="portal.html" style="display:none;">Restaurant Portal</a>
+        <a id="profile-link" href="profile.html" class="profile-icon" style="display:none;" title="My profile"
+          aria-label="My profile">👤</a>
+        <a id="sign-in-link" href="login.html" class="sign-in">Sign In</a>
       </nav>
     </div>
   </header>
 
   <main class="container section">
-    <div class="photo-banner">Feature photo / food gallery area</div>
+    <a id="back-to-explore" class="back-link" href="explore.html">← Back to Explore</a>
+    <div id="business-hero" class="business-hero business-hero-empty" aria-label="Business photos">Loading…</div>
     <div class="detail-layout section">
       <section class="panel story-box">
         <div id="business-meta" class="meta"></div>
@@ -58,15 +61,19 @@
         <p><strong>Address:</strong> <span id="business-address">—</span></p>
         <p><strong>Category:</strong> <span id="business-category">—</span></p>
         <p><strong>Claimed:</strong> <span id="business-claimed">—</span></p>
+        <p id="business-website-wrap" hidden><strong>Website:</strong>
+          <a id="business-website" href="#" target="_blank" rel="noopener"></a></p>
+        <p id="business-phone-wrap" hidden><strong>Phone:</strong> <a id="business-phone" href="#"></a></p>
+        <p id="business-email-wrap" hidden><strong>Message:</strong> <a id="business-email" href="mailto:"></a></p>
         <div class="cta-row">
-          <button class="btn btn-primary">Save deal</button>
-          <button class="btn btn-secondary">Share</button>
+          <button type="button" class="btn btn-secondary" id="share-business-btn">Share page</button>
         </div>
       </aside>
     </div>
   </main>
   <script src="assets/js/api-config.js?v=1"></script>
-  <script src="assets/js/business-detail.js?v=1"></script>
+  <script src="assets/js/app.js?v=3"></script>
+  <script src="assets/js/business-detail.js?v=4"></script>
 </body>
 
 </html>
